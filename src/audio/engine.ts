@@ -19,16 +19,23 @@ const SMOOTH = 0.05
 /**
  * Web Audio graph:
  *   source(loop) → track gain ─┐
- *   ...                         ├→ master gain → pause gate → destination
- *   chime osc → chime gain ─────────────────────────────────→ destination
+ *   ...                         ├→ master gain → pause gate → out ─┐
+ *   chime osc → chime gain ─────────────────────────────────→ out ─┴→ destination
+ *                                                                  └→ <audio> element
  *
  * Pausing mutes the gate instead of suspending the context, so the timer chime
  * can still ring while the mix is paused.
+ *
+ * Mobile browsers freeze a bare AudioContext when the screen locks. Routing `out`
+ * through a MediaStream into a playing <audio> element (plus Media Session metadata)
+ * makes the page count as a media player, so the mix keeps playing in the background.
  */
 export class AudioEngine {
   private ctx: AudioContext | null = null
   private master: GainNode | null = null
   private gate: GainNode | null = null
+  private out: GainNode | null = null
+  private keepAlive: HTMLAudioElement | null = null
   private tracks = new Map<SoundId, Track>()
   private masterVolume = 0.8
   private playing = true
@@ -79,20 +86,62 @@ export class AudioEngine {
     this.gate = ctx.createGain()
     this.master.gain.value = this.masterVolume
     this.gate.gain.value = this.playing ? 1 : 0
+    this.out = ctx.createGain()
     this.master.connect(this.gate)
-    this.gate.connect(ctx.destination)
+    this.gate.connect(this.out)
+    this.out.connect(ctx.destination)
     for (const t of this.tracks.values()) {
       t.gain = ctx.createGain()
       t.gain.gain.value = 0
       t.gain.connect(this.master)
     }
     void ctx.resume()
+    void this.routeThroughMediaElement()
+    this.updateMediaSession()
+  }
+
+  /** Falls back to direct output if the browser refuses (or lacks MediaStream destinations). */
+  private async routeThroughMediaElement(): Promise<void> {
+    const ctx = this.ctx
+    if (!ctx || !this.out || typeof ctx.createMediaStreamDestination !== 'function' || typeof Audio === 'undefined') return
+    try {
+      const dest = ctx.createMediaStreamDestination()
+      const el = new Audio()
+      el.srcObject = dest.stream
+      el.setAttribute('playsinline', '')
+      await el.play() // called synchronously from the “Start” click, so it counts as a user gesture
+      this.out.connect(dest)
+      this.out.disconnect(ctx.destination)
+      this.keepAlive = el
+    } catch {
+      /* stay on direct output */
+    }
   }
 
   async resumeIfNeeded(): Promise<void> {
+    if (this.keepAlive?.paused) void this.keepAlive.play().catch(() => {})
     if (this.ctx && this.ctx.state !== 'running') {
       try { await this.ctx.resume() } catch { /* needs a gesture; retried on next tap */ }
     }
+  }
+
+  /** Lock-screen / notification controls. `play` / `pause` mirror the master button. */
+  setMediaHandlers(meta: { title: string; artist: string }, handlers: { play: () => void; pause: () => void }): void {
+    if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return
+    const ms = navigator.mediaSession
+    try {
+      ms.metadata = new MediaMetadata({ title: meta.title, artist: meta.artist })
+      ms.setActionHandler('play', handlers.play)
+      ms.setActionHandler('pause', handlers.pause)
+    } catch {
+      /* unsupported action — controls are a nicety */
+    }
+    this.updateMediaSession()
+  }
+
+  private updateMediaSession(): void {
+    if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return
+    navigator.mediaSession.playbackState = this.playing ? 'playing' : 'paused'
   }
 
   get state(): AudioContextState | 'none' {
@@ -171,6 +220,7 @@ export class AudioEngine {
 
   setPlaying(playing: boolean, fadeSeconds = 0.4): void {
     this.playing = playing
+    this.updateMediaSession()
     if (!this.ctx || !this.gate) return
     const now = this.ctx.currentTime
     this.gate.gain.cancelScheduledValues(now)
@@ -201,7 +251,7 @@ export class AudioEngine {
       g.gain.exponentialRampToValueAtTime(0.18, start + 0.03)
       g.gain.exponentialRampToValueAtTime(0.0001, start + 1.8)
       osc.connect(g)
-      g.connect(ctx.destination)
+      g.connect(this.out ?? ctx.destination)
       osc.start(start)
       osc.stop(start + 1.9)
     })
@@ -211,6 +261,11 @@ export class AudioEngine {
     for (const t of this.tracks.values()) {
       try { t.source?.stop() } catch { /* already stopped */ }
       t.source = null
+    }
+    if (this.keepAlive) {
+      this.keepAlive.pause()
+      this.keepAlive.srcObject = null
+      this.keepAlive = null
     }
     void this.ctx?.close()
     this.ctx = null

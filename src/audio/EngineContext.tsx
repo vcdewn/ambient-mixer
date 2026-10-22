@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useSyncExternalStore, type ReactNode } from 'react'
 import { SOUNDS, SOUND_IDS } from '../data/sounds'
+import { DICTS } from '../i18n'
 import { useApp } from '../state/AppContext'
 import { AudioEngine, type LoadStatus } from './engine'
 
@@ -29,6 +30,20 @@ export function EngineProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => engine.setMasterVolume(state.masterVolume), [engine, state.masterVolume])
   useEffect(() => engine.setPlaying(state.masterPlaying), [engine, state.masterPlaying])
+
+  // lock-screen / notification play-pause buttons drive the master button
+  const t = DICTS[state.lang]
+  const { dispatch } = useApp()
+  useEffect(() => {
+    if (!state.started) return
+    engine.setMediaHandlers(
+      { title: t.appName, artist: t.tagline },
+      {
+        play: () => dispatch({ type: 'SET_MASTER_PLAYING', playing: true }),
+        pause: () => dispatch({ type: 'SET_MASTER_PLAYING', playing: false }),
+      },
+    )
+  }, [state.started, engine, dispatch, t.appName, t.tagline])
 
   // iOS may leave the context “interrupted” after a call — resume on the next touch
   useEffect(() => {

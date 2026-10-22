@@ -60,6 +60,33 @@ describe('AudioEngine', () => {
     expect(sources[0].stop).toHaveBeenCalled()
   })
 
+  it('routes output through a playing <audio> element so it survives screen lock', async () => {
+    const { ctx } = fakeContext()
+    const dest = { stream: {} }
+    const createDest = vi.fn(() => dest)
+    Object.assign(ctx, { createMediaStreamDestination: createDest })
+    const play = vi.fn(async () => {})
+    vi.stubGlobal('Audio', class { srcObject: unknown; paused = false; play = play; pause = vi.fn(); setAttribute = vi.fn() })
+    const engine = new AudioEngine(SOUNDS, '/', () => ctx as unknown as AudioContext, okFetch)
+    engine.init()
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(createDest).toHaveBeenCalled()
+    expect(play).toHaveBeenCalled()
+    vi.unstubAllGlobals()
+  })
+
+  it('stays on direct output when the browser refuses to play the element', async () => {
+    const { ctx } = fakeContext()
+    Object.assign(ctx, { createMediaStreamDestination: vi.fn(() => ({ stream: {} })) })
+    vi.stubGlobal('Audio', class { play = vi.fn(async () => { throw new Error('NotAllowedError') }); pause = vi.fn(); setAttribute = vi.fn() })
+    const engine = new AudioEngine(SOUNDS, '/', () => ctx as unknown as AudioContext, okFetch)
+    expect(() => engine.init()).not.toThrow()
+    await Promise.resolve()
+    await Promise.resolve()
+    vi.unstubAllGlobals()
+  })
+
   it('marks a failed file as error and recovers on retry', async () => {
     const { ctx } = fakeContext()
     let fail = true
