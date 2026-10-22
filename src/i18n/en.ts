@@ -8,7 +8,7 @@ export const en = {
     rain: 'Rain',
     thunder: 'Thunder',
     campfire: 'Campfire',
-    cafe: 'Café',
+    highway: 'Highway',
     forest: 'Night forest',
     train: 'Train',
   },
@@ -58,7 +58,7 @@ export const en = {
     fading: 'Fading out…',
   },
   credits: 'Sound credits',
-  creditsHint: 'Replace placeholder loops in public/audio and list the authors here.',
+  creditsHint: 'Recordings from Wikimedia Commons, trimmed, looped and converted to AAC. Licenses: CC BY requires credit; the forest recording is CC BY-SA 4.0.',
   close: 'Close',
 }
 

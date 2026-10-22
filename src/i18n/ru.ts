@@ -10,7 +10,7 @@ export const ru: Dict = {
     rain: 'Дождь',
     thunder: 'Гроза',
     campfire: 'Костёр',
-    cafe: 'Кофейня',
+    highway: 'Трасса',
     forest: 'Ночной лес',
     train: 'Поезд',
   },
@@ -60,6 +60,6 @@ export const ru: Dict = {
     fading: 'Затухание…',
   },
   credits: 'Авторы звуков',
-  creditsHint: 'Замените файлы-заглушки в public/audio и укажите здесь авторов.',
+  creditsHint: 'Записи из Wikimedia Commons: обрезаны, зациклены и переведены в AAC. Лицензии: CC BY требует указания автора; запись леса — CC BY-SA 4.0.',
   close: 'Закрыть',
 }

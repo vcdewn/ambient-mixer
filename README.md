@@ -1,6 +1,6 @@
 # Ambient Mixer
 
-Lo-fi / ambient sound mixer: rain, thunder, campfire, café, night forest and train loops with per-sound volume, a focus (Pomodoro) timer, a sleep timer and an animated glass UI. RU / EN.
+Lo-fi / ambient sound mixer: rain, thunder, campfire, highway, night forest and train loops with per-sound volume, a focus (Pomodoro) timer, a sleep timer and an animated glass UI. RU / EN.
 
 Design: [project-design.md](project-design.md)
 
@@ -13,14 +13,22 @@ npm test         # vitest
 npm run build    # static site in dist/
 ```
 
-## Replace the placeholder sounds
+## Sounds and licenses
 
-`public/audio/*.wav` are **generated placeholders** (`npm run gen-audio`) so the app works out of the box.
-Swap them for real seamless loops (CC0 / CC-BY, e.g. from Freesound or Wikimedia Commons — Freesound needs a login to download):
+The loops in `public/audio/*.m4a` are recordings from Wikimedia Commons, trimmed to ≤ 75 s, cross-faded into seamless loops, loudness-matched and encoded as AAC. Authors, licenses and source links live in `src/data/sounds.ts` and are shown in the “Sound credits” block of the UI.
 
-1. Drop files into `public/audio/` (mp3 ≈ 128 kbps, 20–60 s, loop-friendly).
-2. Update `file` and `credit` for each entry in `src/data/sounds.ts`.
-3. CC-BY requires attribution — the “Sound credits” block in the UI is built from `credit`.
+| Sound | Source | Author | License |
+|---|---|---|---|
+| Rain | Listening to Raindrops (large loop) | NASA | Public domain |
+| Thunder | rbh-thunder-storm | RHumphries | CC BY 3.0 |
+| Campfire | Campfire sound ambience | Glaneur de sons | CC BY 3.0 |
+| Highway | Highway from bridge center | stephan | Public domain |
+| Night forest | Grillenzirpen – nachts um 3 im Föhrenwald Mödling | DrTrumpet | CC BY-SA 4.0 |
+| Train | Стук колёс поезда | Ural-66 | CC0 |
+
+The edited forest loop is an adaptation of a CC BY-SA 4.0 work, so that one file stays under CC BY-SA 4.0 (the app code is unaffected).
+
+To swap a sound, drop a new file into `public/audio/` and update `file` / `credit` in `src/data/sounds.ts` (use a new file name — audio is cached for a day).
 
 ## Notes
 
@@ -53,5 +61,4 @@ Import the repo at [app.netlify.com](https://app.netlify.com), build command `np
 
 ### Before going public
 
-- Replace the placeholder sounds and fill in the credits (see above) — CC-BY requires attribution.
 - Check the deployed site on a real iPhone and Android phone: sound starts after “Start session”, sliders work, loops are seamless.
