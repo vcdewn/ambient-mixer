@@ -19,14 +19,14 @@ The loops in `public/audio/*.m4a` are recordings from Wikimedia Commons, trimmed
 
 | Sound | Source | Author | License |
 |---|---|---|---|
-| Rain | Listening to Raindrops (large loop) | NASA | Public domain |
+| Rain | Rain against the window | cori | Public domain |
 | Thunder | rbh-thunder-storm | RHumphries | CC BY 3.0 |
 | Campfire | Campfire sound ambience | Glaneur de sons | CC BY 3.0 |
 | Highway | Highway from bridge center | stephan | Public domain |
-| Night forest | Grillenzirpen – nachts um 3 im Föhrenwald Mödling | DrTrumpet | CC BY-SA 4.0 |
+| Night forest | Nature sounds ambience in a Dordogne pond | Glaneur de sons | CC BY 3.0 |
 | Train | Стук колёс поезда | Ural-66 | CC0 |
 
-The edited forest loop is an adaptation of a CC BY-SA 4.0 work, so that one file stays under CC BY-SA 4.0 (the app code is unaffected).
+The CC BY recordings (thunder, campfire, night forest) are edited (trimmed, looped, loudness-matched, converted); credit is shown in the app.
 
 To swap a sound, drop a new file into `public/audio/` and update `file` / `credit` in `src/data/sounds.ts` (use a new file name — audio is cached for a day).
 

@@ -24,8 +24,8 @@ const COMMONS = 'https://commons.wikimedia.org/wiki/File:'
 
 export const SOUNDS: SoundDef[] = [
   {
-    id: 'rain', icon: CloudRain, file: 'audio/rain.m4a',
-    credit: { title: 'Listening to Raindrops (large loop)', author: 'NASA', license: 'Public domain', url: `${COMMONS}Listening_to_Raindrops_(1035382_-_large_loop).mp3` },
+    id: 'rain', icon: CloudRain, file: 'audio/rain-window.m4a',
+    credit: { title: 'Rain against the window', author: 'cori', license: 'Public domain', url: `${COMMONS}Rain_against_the_window.ogg` },
   },
   {
     id: 'thunder', icon: CloudLightning, file: 'audio/thunder.m4a',
@@ -40,8 +40,8 @@ export const SOUNDS: SoundDef[] = [
     credit: { title: 'Highway from bridge center', author: 'stephan', license: 'Public domain', url: `${COMMONS}Highway_from_bridge_center.ogg` },
   },
   {
-    id: 'forest', icon: Trees, file: 'audio/forest.m4a',
-    credit: { title: 'Audio Hörbild Grillenzirpen – nachts um 3 im Föhrenwald Mödling', author: 'DrTrumpet', license: 'CC BY-SA 4.0', url: `${COMMONS}Audio_H%C3%B6rbild_Grillenzirpen_-_nachts_um_3_im_F%C3%B6hrenwald_M%C3%B6dling.ogg` },
+    id: 'forest', icon: Trees, file: 'audio/forest-pond.m4a',
+    credit: { title: 'Nature sounds ambience in a Dordogne pond', author: 'Glaneur de sons', license: 'CC BY 3.0', url: `${COMMONS}Nature_sounds_ambience_in_a_Dordogne_pond.ogg` },
   },
   {
     id: 'train', icon: TrainFront, file: 'audio/train.m4a',
