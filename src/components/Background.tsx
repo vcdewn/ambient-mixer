@@ -1,7 +1,7 @@
 import { useApp } from '../state/AppContext'
 import type { BgPreset } from '../state/types'
 
-const PRESETS: BgPreset[] = ['night', 'sunset', 'misty']
+const PRESETS: BgPreset[] = ['night', 'sunset', 'moss']
 
 /** Three stacked gradients; switching presets cross-fades their opacity. */
 export function Background() {

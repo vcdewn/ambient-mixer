@@ -47,8 +47,8 @@ export function SoundCard({ sound }: { sound: SoundDef }) {
               background: track.enabled ? 'var(--accent)' : 'var(--glass)',
               borderColor: 'var(--glass-border)',
             }}>
-            <span className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all"
-              style={{ left: track.enabled ? '1.5rem' : '0.125rem' }} />
+            <span className="absolute top-0.5 h-5 w-5 rounded-full shadow transition-all"
+              style={{ background: '#dcdae6', left: track.enabled ? '1.5rem' : '0.125rem' }} />
           </button>
         )}
       </div>

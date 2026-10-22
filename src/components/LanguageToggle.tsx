@@ -5,7 +5,7 @@ export function LanguageToggle() {
   const t = useT()
   return (
     <div role="group" aria-label={t.language} className="glass-btn inline-flex p-0.5 text-sm font-medium">
-      {(['ru', 'en'] as const).map((lang) => (
+      {(['en', 'ru'] as const).map((lang) => (
         <button key={lang} aria-pressed={state.lang === lang} lang={lang}
           onClick={() => dispatch({ type: 'SET_LANG', lang })}
           className="rounded-full px-3 py-1 transition-colors"

@@ -1,7 +1,7 @@
 import type { SoundId } from '../data/sounds'
 
 export type Lang = 'ru' | 'en'
-export type BgPreset = 'night' | 'sunset' | 'misty'
+export type BgPreset = 'night' | 'sunset' | 'moss'
 export type TimerMode = 'off' | 'focus' | 'sleep'
 
 export interface TrackState {

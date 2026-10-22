@@ -21,7 +21,7 @@ export const en = {
   retry: 'Retry',
   loading: 'Loading…',
   background: 'Background',
-  presets: { night: 'Night', sunset: 'Sunset', misty: 'Misty morning' },
+  presets: { night: 'Night', sunset: 'Sunset', moss: 'Forest dusk' },
   language: 'Language',
   noWebAudio: 'Your browser does not support Web Audio. Please try a modern browser.',
   errorTitle: 'Something went wrong',

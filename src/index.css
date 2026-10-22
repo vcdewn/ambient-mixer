@@ -1,28 +1,31 @@
 @import 'tailwindcss';
 
 :root {
-  --fg: #f4f1ff;
-  --fg-soft: rgb(244 241 255 / 0.72);
-  --glass: rgb(255 255 255 / 0.1);
-  --glass-strong: rgb(255 255 255 / 0.18);
-  --glass-border: rgb(255 255 255 / 0.22);
-  --accent: #c4b5fd;
-  --accent-ink: #1e1b3a;
+  --fg: #e6e2f4;
+  --fg-soft: rgb(230 226 244 / 0.66);
+  --glass: rgb(255 255 255 / 0.06);
+  --glass-strong: rgb(255 255 255 / 0.11);
+  --glass-border: rgb(255 255 255 / 0.12);
+  --accent: #a89bdc;
+  --accent-ink: #14102c;
+  --shadow: rgb(0 0 0 / 0.45);
 }
 
 [data-bg='sunset'] {
-  --accent: #fdba74;
-  --accent-ink: #3b1530;
+  --fg: #eadfe2;
+  --fg-soft: rgb(234 223 226 / 0.66);
+  --accent: #d9a27c;
+  --accent-ink: #2a1020;
 }
 
-[data-bg='misty'] {
-  --fg: #1f2d3a;
-  --fg-soft: rgb(31 45 58 / 0.72);
-  --glass: rgb(255 255 255 / 0.38);
-  --glass-strong: rgb(255 255 255 / 0.6);
-  --glass-border: rgb(255 255 255 / 0.7);
-  --accent: #2f6f73;
-  --accent-ink: #ffffff;
+[data-bg='moss'] {
+  --fg: #dcebe1;
+  --fg-soft: rgb(220 235 225 / 0.64);
+  --glass: rgb(190 225 205 / 0.06);
+  --glass-strong: rgb(190 225 205 / 0.11);
+  --glass-border: rgb(190 225 205 / 0.13);
+  --accent: #86b89b;
+  --accent-ink: #0b1a14;
 }
 
 html,
@@ -35,7 +38,7 @@ body {
   margin: 0;
   color: var(--fg);
   font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  background: #0f0b24;
+  background: #0a0818;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -59,13 +62,13 @@ body {
   animation: drift 45s ease-in-out infinite;
 }
 .bg-night .bg-gradient {
-  background-image: linear-gradient(135deg, #0f0b24, #2b1d5c, #12304f, #3a1f66, #0f0b24);
+  background-image: linear-gradient(135deg, #0a0818, #1c1442, #0f2540, #1a2f5c, #2d1a58, #0a0818);
 }
 .bg-sunset .bg-gradient {
-  background-image: linear-gradient(135deg, #3b1530, #b3445f, #f08a5d, #7a3b8f, #3b1530);
+  background-image: linear-gradient(135deg, #25101f, #5c2a48, #8e5244, #6b3358, #3f2760, #25101f);
 }
-.bg-misty .bg-gradient {
-  background-image: linear-gradient(135deg, #cfdde6, #dfeee9, #f3efe4, #c7d9e5, #cfdde6);
+.bg-moss .bg-gradient {
+  background-image: linear-gradient(135deg, #07120f, #0f2a22, #1b3f31, #14383a, #0f2a30, #07120f);
 }
 
 .blob {
@@ -73,8 +76,8 @@ body {
   width: 46vmax;
   height: 46vmax;
   border-radius: 9999px;
-  filter: blur(80px);
-  opacity: 0.45;
+  filter: blur(90px);
+  opacity: 0.3;
   animation: float 38s ease-in-out infinite;
 }
 .blob:nth-child(2) {
@@ -84,15 +87,15 @@ body {
 .blob:nth-child(3) {
   animation-duration: 64s;
 }
-.bg-night .blob:nth-child(2) { background: #6d4aff; top: -10%; left: -10%; }
-.bg-night .blob:nth-child(3) { background: #1f8fb3; bottom: -15%; right: -10%; }
-.bg-night .blob:nth-child(4) { background: #a24bd1; top: 30%; left: 40%; opacity: 0.25; }
-.bg-sunset .blob:nth-child(2) { background: #ffb26b; top: -10%; right: -10%; }
-.bg-sunset .blob:nth-child(3) { background: #ff5e8a; bottom: -15%; left: -10%; }
-.bg-sunset .blob:nth-child(4) { background: #8a4fff; top: 35%; left: 35%; opacity: 0.25; }
-.bg-misty .blob:nth-child(2) { background: #a8d5ce; top: -10%; left: -5%; opacity: 0.6; }
-.bg-misty .blob:nth-child(3) { background: #b9cde6; bottom: -15%; right: -10%; opacity: 0.6; }
-.bg-misty .blob:nth-child(4) { background: #fff6dc; top: 35%; left: 40%; opacity: 0.6; }
+.bg-night .blob:nth-child(2) { background: #4b36b0; top: -10%; left: -10%; }
+.bg-night .blob:nth-child(3) { background: #1b6a86; bottom: -15%; right: -10%; }
+.bg-night .blob:nth-child(4) { background: #7a3a9e; top: 30%; left: 40%; opacity: 0.18; }
+.bg-sunset .blob:nth-child(2) { background: #b8754a; top: -10%; right: -10%; }
+.bg-sunset .blob:nth-child(3) { background: #a8395f; bottom: -15%; left: -10%; }
+.bg-sunset .blob:nth-child(4) { background: #5f3a9e; top: 35%; left: 35%; opacity: 0.18; }
+.bg-moss .blob:nth-child(2) { background: #2f6b57; top: -10%; left: -5%; }
+.bg-moss .blob:nth-child(3) { background: #1f5a5e; bottom: -15%; right: -10%; }
+.bg-moss .blob:nth-child(4) { background: #557a4d; top: 35%; left: 40%; opacity: 0.16; }
 
 @keyframes drift {
   0%, 100% { background-position: 0% 50%; }
@@ -114,6 +117,51 @@ body {
   }
 }
 
+/* swatches: no halo when idle, a soft accent ring when selected */
+.swatch {
+  border: 0;
+  opacity: 0.7;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1), inset 0 -6px 10px rgb(0 0 0 / 0.25);
+}
+.swatch:hover { opacity: 1; }
+.swatch[data-on='true'] {
+  opacity: 1;
+  box-shadow: 0 0 0 2px var(--accent), 0 0 16px -2px var(--accent), inset 0 -6px 10px rgb(0 0 0 / 0.25);
+}
+
+/* slow aurora shimmer over each gradient */
+.bg-layer::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 45% 35% at 25% 30%, var(--aura-a) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 45% at 75% 70%, var(--aura-b) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 30% at 55% 15%, var(--aura-c) 0%, transparent 70%);
+  mix-blend-mode: screen;
+  z-index: 1;
+  opacity: 0.55;
+  animation: aurora 32s ease-in-out infinite alternate;
+}
+.bg-night { --aura-a: rgb(110 80 230 / 0.28); --aura-b: rgb(30 140 180 / 0.24); --aura-c: rgb(170 80 210 / 0.16); }
+.bg-sunset { --aura-a: rgb(220 130 90 / 0.26); --aura-b: rgb(170 60 110 / 0.24); --aura-c: rgb(120 70 190 / 0.18); }
+.bg-moss { --aura-a: rgb(70 150 110 / 0.26); --aura-b: rgb(40 120 130 / 0.24); --aura-c: rgb(120 160 90 / 0.14); }
+@keyframes aurora {
+  0% { transform: translate(-4%, -3%) rotate(0deg) scale(1); }
+  50% { transform: translate(5%, 4%) rotate(6deg) scale(1.1); }
+  100% { transform: translate(-2%, 6%) rotate(-5deg) scale(1.05); }
+}
+@media (prefers-reduced-motion: reduce) { .bg-layer::before { animation: none; } }
+
+/* soft dark vignette keeps the edges calm and the centre from glaring */
+.bg-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(ellipse at 50% 40%, transparent 35%, rgb(0 0 0 / 0.38) 100%);
+}
+
 /* ---------- glass ---------- */
 .glass {
   background: var(--glass);
@@ -121,7 +169,7 @@ body {
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   border-radius: 1.5rem;
-  box-shadow: 0 10px 40px -12px rgb(0 0 0 / 0.35);
+  box-shadow: 0 12px 40px -14px var(--shadow), inset 0 1px 0 rgb(255 255 255 / 0.05);
 }
 
 .glass-btn {
@@ -173,15 +221,15 @@ input[type='range']::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
   border-radius: 9999px;
-  background: #fff;
+  background: color-mix(in srgb, var(--accent) 30%, #d8d6e2);
   border: 2px solid var(--accent);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.4);
 }
 input[type='range']::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border-radius: 9999px;
-  background: #fff;
+  background: color-mix(in srgb, var(--accent) 30%, #d8d6e2);
   border: 2px solid var(--accent);
 }
 
@@ -203,21 +251,15 @@ input[type='number'] {
 
 /* ---------- sound cards: accent + live scene ---------- */
 .sound-card {
-  --accent: var(--sc);
+  --accent: color-mix(in srgb, var(--sc) 78%, #20203a);
   position: relative;
   overflow: hidden;
   transition: background 0.4s, box-shadow 0.4s, opacity 0.3s;
 }
-[data-bg='misty'] .sound-card {
-  --accent: color-mix(in srgb, var(--sc) 55%, #1f2d3a);
-}
-[data-bg='misty'] .sound-card[data-on='true'] {
-  background: color-mix(in srgb, var(--accent) 16%, var(--glass));
-}
 .sound-card[data-on='true'] {
-  background: color-mix(in srgb, var(--sc) 14%, rgb(20 12 45 / 0.38));
-  border-color: color-mix(in srgb, var(--sc) 70%, transparent);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--sc) 55%, transparent), 0 0 36px -8px var(--sc);
+  background: color-mix(in srgb, var(--sc) 9%, rgb(8 8 20 / 0.5));
+  border-color: color-mix(in srgb, var(--sc) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--sc) 30%, transparent), 0 0 30px -12px var(--sc);
 }
 .sound-card > :not(.scene) {
   position: relative;
@@ -276,7 +318,7 @@ input[type='number'] {
 .scene-flake {
   top: 0;
   border-radius: 9999px;
-  background: #fff;
+  background: #cfdcee;
   opacity: 0;
   animation: scene-snow linear infinite;
 }
@@ -392,4 +434,13 @@ input[type='number'] {
 
 @media (prefers-reduced-motion: reduce) {
   .scene { display: none; }
+}
+
+/* ---------- calm details ---------- */
+h1 {
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+.btn-primary {
+  box-shadow: 0 0 28px -8px var(--accent);
 }

@@ -23,7 +23,7 @@ export const ru: Dict = {
   retry: 'Повторить',
   loading: 'Загрузка…',
   background: 'Фон',
-  presets: { night: 'Ночь', sunset: 'Закат', misty: 'Туманное утро' },
+  presets: { night: 'Ночь', sunset: 'Закат', moss: 'Лесные сумерки' },
   language: 'Язык',
   noWebAudio: 'Ваш браузер не поддерживает Web Audio. Попробуйте современный браузер.',
   errorTitle: 'Что-то пошло не так',

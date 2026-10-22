@@ -4,7 +4,7 @@ import type { AppState, BgPreset, FocusSettings, Lang, TimerMode } from './types
 
 export const STORAGE_KEY = 'ambient-mixer:v1'
 
-const BG: BgPreset[] = ['night', 'sunset', 'misty']
+const BG: BgPreset[] = ['night', 'sunset', 'moss']
 const LANGS: Lang[] = ['ru', 'en']
 const MODES: TimerMode[] = ['off', 'focus', 'sleep']
 

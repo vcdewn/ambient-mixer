@@ -23,7 +23,7 @@ export function StartScreen() {
       <div className="absolute right-4 top-4"><LanguageToggle /></div>
       <Moon size={56} aria-hidden="true" style={{ color: 'var(--accent)' }} />
       <div>
-        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight">{t.appName}</h1>
+        <h1 className="text-4xl sm:text-5xl">{t.appName}</h1>
         <p className="mt-3 text-lg" style={{ color: 'var(--fg-soft)' }}>{t.tagline}</p>
       </div>
       {supported ? (

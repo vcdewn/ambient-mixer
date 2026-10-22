@@ -21,7 +21,7 @@ function Mixer() {
       <main data-bg={state.bgPreset} className="mx-auto flex min-h-screen max-w-5xl flex-col gap-5 px-4 py-6 sm:px-6"
         aria-hidden={!state.started} inert={!state.started}>
         <header className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight">{t.appName}</h1>
+          <h1 className="text-2xl">{t.appName}</h1>
           <div className="flex items-center gap-4">
             <BackgroundPresets />
             <LanguageToggle />
