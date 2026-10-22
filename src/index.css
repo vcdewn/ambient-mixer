@@ -200,3 +200,196 @@ input[type='number'] {
 }
 .icon-live { animation: pulse-soft 3.2s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .icon-live { animation: none; } }
+
+/* ---------- sound cards: accent + live scene ---------- */
+.sound-card {
+  --accent: var(--sc);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s, box-shadow 0.4s, opacity 0.3s;
+}
+[data-bg='misty'] .sound-card {
+  --accent: color-mix(in srgb, var(--sc) 55%, #1f2d3a);
+}
+[data-bg='misty'] .sound-card[data-on='true'] {
+  background: color-mix(in srgb, var(--accent) 16%, var(--glass));
+}
+.sound-card[data-on='true'] {
+  background: color-mix(in srgb, var(--sc) 14%, rgb(20 12 45 / 0.38));
+  border-color: color-mix(in srgb, var(--sc) 70%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--sc) 55%, transparent), 0 0 36px -8px var(--sc);
+}
+.sound-card > :not(.scene) {
+  position: relative;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--sc);
+  transition: opacity 0.4s;
+}
+.scene > * {
+  position: absolute;
+}
+
+.scene-drop {
+  top: 0;
+  width: 1.5px;
+  height: 12px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, transparent, var(--sc));
+  opacity: 0;
+  animation: scene-fall linear infinite;
+}
+@keyframes scene-fall {
+  0% { transform: translateY(-14px); opacity: 0; }
+  20% { opacity: 0.85; }
+  100% { transform: translateY(170px); opacity: 0; }
+}
+
+.scene-flash {
+  inset: 0;
+  background: radial-gradient(circle at 80% 20%, var(--sc), transparent 70%);
+  opacity: 0;
+  animation: scene-flash 7s linear infinite;
+}
+.scene-bolt {
+  right: 14%;
+  top: 8%;
+  width: 26px;
+  height: 44px;
+  opacity: 0;
+  animation: scene-flash 7s linear infinite;
+  filter: drop-shadow(0 0 6px var(--sc));
+}
+@keyframes scene-flash {
+  0%, 100% { opacity: 0; }
+  3% { opacity: 0.55; }
+  5% { opacity: 0.05; }
+  8% { opacity: 0.4; }
+  14% { opacity: 0; }
+}
+
+.scene-flake {
+  top: 0;
+  border-radius: 9999px;
+  background: #fff;
+  opacity: 0;
+  animation: scene-snow linear infinite;
+}
+@keyframes scene-snow {
+  0% { transform: translate(0, -8px); opacity: 0; }
+  15% { opacity: 0.9; }
+  50% { transform: translate(10px, 50px); }
+  100% { transform: translate(-6px, 120px); opacity: 0; }
+}
+
+.scene-firefly {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--sc);
+  box-shadow: 0 0 10px 3px var(--sc);
+  opacity: 0;
+  animation: scene-firefly ease-in-out infinite;
+}
+@keyframes scene-firefly {
+  0%, 100% { transform: translate(0, 0); opacity: 0; }
+  30% { opacity: 0.95; }
+  50% { transform: translate(14px, -10px); opacity: 0.4; }
+  75% { transform: translate(-8px, -16px); opacity: 0.9; }
+}
+
+.scene-glow {
+  left: -10%;
+  right: -10%;
+  bottom: -50%;
+  height: 120%;
+  background: radial-gradient(ellipse at 50% 100%, var(--sc), transparent 65%);
+  opacity: 0.5;
+  animation: scene-flicker 1.7s ease-in-out infinite;
+}
+@keyframes scene-flicker {
+  0%, 100% { opacity: 0.42; transform: scaleY(1); }
+  30% { opacity: 0.6; transform: scaleY(1.08); }
+  60% { opacity: 0.38; transform: scaleY(0.96); }
+}
+.scene-ember {
+  bottom: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: #ffd9a8;
+  box-shadow: 0 0 5px 1px var(--sc);
+  opacity: 0;
+  animation: scene-rise ease-out infinite;
+}
+@keyframes scene-rise {
+  0% { transform: translate(0, 0); opacity: 0; }
+  15% { opacity: 0.95; }
+  100% { transform: translate(10px, -90px); opacity: 0; }
+}
+
+.scene-wave {
+  left: 0;
+  bottom: 0;
+  width: 200%;
+  height: 46%;
+  fill: var(--sc);
+  animation: scene-sway 7s linear infinite;
+}
+.scene-wave-back {
+  opacity: 0.22;
+  height: 54%;
+  animation-duration: 11s;
+  animation-direction: reverse;
+}
+.scene-wave-front {
+  opacity: 0.32;
+}
+@keyframes scene-sway {
+  to { transform: translateX(-50%); }
+}
+
+.scene-car {
+  left: 0;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to right, transparent, var(--car));
+  box-shadow: 0 0 8px 1px var(--car);
+  opacity: 0;
+  animation: scene-drive linear infinite;
+}
+@keyframes scene-drive {
+  0% { transform: translateX(-30px); opacity: 0; }
+  15% { opacity: 0.9; }
+  85% { opacity: 0.9; }
+  100% { transform: translateX(420px); opacity: 0; }
+}
+
+.scene-track {
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  height: 2px;
+  background: color-mix(in srgb, var(--sc) 55%, transparent);
+}
+.scene-sleepers {
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  height: 22px;
+  background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--sc) 40%, transparent) 0 3px, transparent 3px 22px);
+  animation: scene-roll 0.9s linear infinite;
+}
+@keyframes scene-roll {
+  to { background-position: -22px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene { display: none; }
+}

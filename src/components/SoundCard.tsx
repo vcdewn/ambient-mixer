@@ -1,8 +1,10 @@
+import type { CSSProperties } from 'react'
 import { RotateCw } from 'lucide-react'
 import type { SoundDef } from '../data/sounds'
 import { useEngine } from '../audio/EngineContext'
 import { useApp, useT } from '../state/AppContext'
 import { Slider } from './Slider'
+import { SoundScene } from './SoundScene'
 
 export function SoundCard({ sound }: { sound: SoundDef }) {
   const { state, dispatch } = useApp()
@@ -17,8 +19,9 @@ export function SoundCard({ sound }: { sound: SoundDef }) {
   const live = track.enabled && state.masterPlaying && status === 'ready'
 
   return (
-    <div className={`glass p-5 flex flex-col gap-4 transition-opacity ${track.enabled ? '' : 'opacity-80'}`}
-      style={track.enabled ? { boxShadow: '0 0 0 1px var(--accent), 0 0 36px -6px var(--accent)' } : undefined}>
+    <div className={`glass sound-card p-5 flex flex-col gap-4 ${track.enabled ? '' : 'opacity-80'}`}
+      data-on={track.enabled} style={{ '--sc': sound.color } as CSSProperties}>
+      {live && <SoundScene id={sound.id} level={track.volume} />}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <Icon className={`shrink-0 ${live ? 'icon-live' : ''}`} size={28} aria-hidden="true"
