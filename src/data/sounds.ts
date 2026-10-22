@@ -10,7 +10,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-export const SOUND_IDS = ['rain', 'thunder', 'campfire', 'highway', 'forest', 'train', 'beach', 'blizzard'] as const
+export const SOUND_IDS = ['rain', 'thunder', 'blizzard', 'forest', 'campfire', 'beach', 'highway', 'train'] as const
 export type SoundId = (typeof SOUND_IDS)[number]
 
 export interface SoundDef {
@@ -34,27 +34,27 @@ export const SOUNDS: SoundDef[] = [
     credit: { title: 'rbh-thunder-storm', author: 'RHumphries', license: 'CC BY 3.0', url: `${COMMONS}Rhumphries_-_rbh-thunder-storm.ogg` },
   },
   {
-    id: 'campfire', icon: Flame, file: 'audio/campfire.m4a',
-    credit: { title: 'Campfire sound ambience', author: 'Glaneur de sons', license: 'CC BY 3.0', url: `${COMMONS}Campfire_sound_ambience.ogg` },
-  },
-  {
-    id: 'highway', icon: Car, file: 'audio/highway.m4a',
-    credit: { title: 'Highway from bridge center', author: 'stephan', license: 'Public domain', url: `${COMMONS}Highway_from_bridge_center.ogg` },
+    id: 'blizzard', icon: Snowflake, file: 'audio/blizzard-snow.m4a',
+    credit: { title: 'IJzige wind met een sneeuwbui', author: 'Beeld en Geluid', license: 'CC BY-SA 3.0', url: `${COMMONS}IJzige_wind_met_een_sneeuwbui_-_SoundCloud_-_Beeld_en_Geluid.ogg` },
   },
   {
     id: 'forest', icon: Trees, file: 'audio/forest-pond.m4a',
     credit: { title: 'Nature sounds ambience in a Dordogne pond', author: 'Glaneur de sons', license: 'CC BY 3.0', url: `${COMMONS}Nature_sounds_ambience_in_a_Dordogne_pond.ogg` },
   },
   {
-    id: 'train', icon: TrainFront, file: 'audio/train.m4a',
-    credit: { title: 'Стук колёс поезда', author: 'Ural-66', license: 'CC0', url: `${COMMONS}%D0%A1%D1%82%D1%83%D0%BA_%D0%BA%D0%BE%D0%BB%D1%91%D1%81_%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%B0.ogg` },
+    id: 'campfire', icon: Flame, file: 'audio/campfire.m4a',
+    credit: { title: 'Campfire sound ambience', author: 'Glaneur de sons', license: 'CC BY 3.0', url: `${COMMONS}Campfire_sound_ambience.ogg` },
   },
   {
     id: 'beach', icon: Waves, file: 'audio/beach-waves.m4a',
     credit: { title: 'Ocean Waves on a Tropical Beach', author: 'Jarrod stanley', license: 'CC0', url: `${COMMONS}Ocean_Waves_on_a_Tropical_Beach.ogg` },
   },
   {
-    id: 'blizzard', icon: Snowflake, file: 'audio/blizzard-snow.m4a',
-    credit: { title: 'IJzige wind met een sneeuwbui', author: 'Beeld en Geluid', license: 'CC BY-SA 3.0', url: `${COMMONS}IJzige_wind_met_een_sneeuwbui_-_SoundCloud_-_Beeld_en_Geluid.ogg` },
+    id: 'highway', icon: Car, file: 'audio/highway.m4a',
+    credit: { title: 'Highway from bridge center', author: 'stephan', license: 'Public domain', url: `${COMMONS}Highway_from_bridge_center.ogg` },
+  },
+  {
+    id: 'train', icon: TrainFront, file: 'audio/train.m4a',
+    credit: { title: 'Стук колёс поезда', author: 'Ural-66', license: 'CC0', url: `${COMMONS}%D0%A1%D1%82%D1%83%D0%BA_%D0%BA%D0%BE%D0%BB%D1%91%D1%81_%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%B0.ogg` },
   },
 ]

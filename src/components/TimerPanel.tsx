@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Pause, Play, RotateCcw, SkipForward, Coffee, Settings2, X } from 'lucide-react'
+import { useEffect } from 'react'
+import { Pause, Play, RotateCcw, SkipForward, Coffee } from 'lucide-react'
 import { useEngine } from '../audio/EngineContext'
 import { LIMITS } from '../state/reducer'
 import { useApp, useT } from '../state/AppContext'
@@ -8,7 +8,7 @@ import { formatClock } from '../timers/format'
 import { useFocusTimer } from '../timers/useFocusTimer'
 import { useSleepTimer } from '../timers/useSleepTimer'
 
-const MODES: TimerMode[] = ['off', 'focus', 'sleep']
+const MODES: TimerMode[] = ['focus', 'sleep', 'off']
 const SLEEP_PRESETS = [30, 60, 120, 240]
 
 function NumberField({ label, value, min, max, onChange }: {
@@ -28,7 +28,6 @@ export function TimerPanel() {
   const { engine } = useEngine()
   const t = useT()
   const mode = state.timerMode
-  const [showSettings, setShowSettings] = useState(false)
 
   const focus = useFocusTimer(state.focus, (_finished, next) => {
     if (state.focus.chime) engine.playChime(next === 'work' ? 'work' : 'break')
@@ -99,19 +98,18 @@ export function TimerPanel() {
                   ? <><Coffee size={16} aria-hidden="true" /> {t.focus.breakNow}</>
                   : <><SkipForward size={16} aria-hidden="true" /> {t.focus.skip}</>}
               </button>
-              <button className="glass-btn flex items-center gap-2 px-4 py-2.5 text-sm" aria-expanded={showSettings}
-                onClick={() => setShowSettings((v) => !v)}>
-                {showSettings ? <X size={16} aria-hidden="true" /> : <Settings2 size={16} aria-hidden="true" />} {t.focus.settings}
-              </button>
             </div>
           </div>
 
-          {showSettings && (
-            <div className="grid gap-3 sm:grid-cols-2 border-t pt-4" style={{ borderColor: 'var(--glass-border)' }}>
+          <div className="flex flex-col gap-4 border-t pt-4" style={{ borderColor: 'var(--glass-border)' }}>
+            <h3 className="text-sm font-medium" style={{ color: 'var(--fg-soft)' }}>{t.focus.settings}</h3>
+            <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
               <NumberField label={t.focus.workMin} value={f.workMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(workMin) => setF({ workMin })} />
               <NumberField label={t.focus.breakMin} value={f.breakMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(breakMin) => setF({ breakMin })} />
               <NumberField label={t.focus.longBreakMin} value={f.longBreakMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(longBreakMin) => setF({ longBreakMin })} />
               <NumberField label={t.focus.cycles} value={f.cyclesBeforeLong} min={LIMITS.cyclesMin} max={LIMITS.cyclesMax} onChange={(cyclesBeforeLong) => setF({ cyclesBeforeLong })} />
+            </div>
+            <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={f.autoAdvance} onChange={(e) => setF({ autoAdvance: e.target.checked })} /> {t.focus.autoAdvance}
               </label>
@@ -119,7 +117,7 @@ export function TimerPanel() {
                 <input type="checkbox" checked={f.chime} onChange={(e) => setF({ chime: e.target.checked })} /> {t.focus.chime}
               </label>
             </div>
-          )}
+          </div>
         </div>
       )}
 

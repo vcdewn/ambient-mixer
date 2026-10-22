@@ -36,7 +36,7 @@ function Mixer() {
           <p className="text-center" style={{ color: 'var(--fg-soft)' }}>{t.emptyHint}</p>
         )}
 
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="grid gap-4 sm:grid-cols-2">
           {SOUNDS.map((s) => <SoundCard key={s.id} sound={s} />)}
         </section>
 
