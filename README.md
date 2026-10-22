@@ -26,7 +26,7 @@ The loops in `public/audio/*.m4a` are recordings from Wikimedia Commons, trimmed
 | Night forest | Nature sounds ambience in a Dordogne pond | Glaneur de sons | CC BY 3.0 |
 | Train | Стук колёс поезда | Ural-66 | CC0 |
 | Beach | Ocean Waves on a Tropical Beach | Jarrod stanley | CC0 |
-| Blizzard | Howling wind | Tvabutzku1234 | CC0 |
+| Blizzard | IJzige wind met een sneeuwbui | Beeld en Geluid | CC BY-SA 3.0 |
 
 The CC BY recordings (thunder, campfire, night forest) are edited (trimmed, looped, loudness-matched, converted); credit is shown in the app.
 

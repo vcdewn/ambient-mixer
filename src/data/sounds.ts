@@ -54,7 +54,7 @@ export const SOUNDS: SoundDef[] = [
     credit: { title: 'Ocean Waves on a Tropical Beach', author: 'Jarrod stanley', license: 'CC0', url: `${COMMONS}Ocean_Waves_on_a_Tropical_Beach.ogg` },
   },
   {
-    id: 'blizzard', icon: Snowflake, file: 'audio/blizzard-wind.m4a',
-    credit: { title: 'Howling wind', author: 'Tvabutzku1234', license: 'CC0', url: `${COMMONS}Howling_wind.ogg` },
+    id: 'blizzard', icon: Snowflake, file: 'audio/blizzard-snow.m4a',
+    credit: { title: 'IJzige wind met een sneeuwbui', author: 'Beeld en Geluid', license: 'CC BY-SA 3.0', url: `${COMMONS}IJzige_wind_met_een_sneeuwbui_-_SoundCloud_-_Beeld_en_Geluid.ogg` },
   },
 ]

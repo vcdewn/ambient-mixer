@@ -60,7 +60,7 @@ export const en = {
     fading: 'Fading out…',
   },
   credits: 'Sound credits',
-  creditsHint: 'Recordings from Wikimedia Commons, trimmed, looped and converted to AAC. Thunder, campfire and forest are licensed CC BY (edited); rain, highway, train, beach and blizzard are public domain / CC0.',
+  creditsHint: 'Recordings from Wikimedia Commons, trimmed, looped and converted to AAC. Thunder, campfire and forest are licensed CC BY, and blizzard CC BY-SA (all edited); rain, highway, train and beach are public domain / CC0.',
   close: 'Close',
 }
 
