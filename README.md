@@ -64,3 +64,7 @@ Import the repo at [app.netlify.com](https://app.netlify.com), build command `np
 ### Before going public
 
 - Check the deployed site on a real iPhone and Android phone: sound starts after “Start session”, sliders work, loops are seamless.
+
+## Deploy
+
+Every push to `main` is deployed automatically by Vercel.
