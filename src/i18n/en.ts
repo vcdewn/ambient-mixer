@@ -11,6 +11,8 @@ export const en = {
     highway: 'Highway',
     forest: 'Night forest',
     train: 'Train',
+    beach: 'Beach',
+    blizzard: 'Blizzard',
   },
   volume: 'Volume',
   masterVolume: 'Master volume',
@@ -58,7 +60,7 @@ export const en = {
     fading: 'Fading out…',
   },
   credits: 'Sound credits',
-  creditsHint: 'Recordings from Wikimedia Commons, trimmed, looped and converted to AAC. Thunder, campfire and forest are licensed CC BY (edited); rain, highway and train are public domain / CC0.',
+  creditsHint: 'Recordings from Wikimedia Commons, trimmed, looped and converted to AAC. Thunder, campfire and forest are licensed CC BY (edited); rain, highway, train, beach and blizzard are public domain / CC0.',
   close: 'Close',
 }
 

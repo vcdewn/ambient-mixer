@@ -3,12 +3,14 @@ import {
   CloudRain,
   Car,
   Flame,
+  Snowflake,
   Trees,
   TrainFront,
+  Waves,
   type LucideIcon,
 } from 'lucide-react'
 
-export const SOUND_IDS = ['rain', 'thunder', 'campfire', 'highway', 'forest', 'train'] as const
+export const SOUND_IDS = ['rain', 'thunder', 'campfire', 'highway', 'forest', 'train', 'beach', 'blizzard'] as const
 export type SoundId = (typeof SOUND_IDS)[number]
 
 export interface SoundDef {
@@ -46,5 +48,13 @@ export const SOUNDS: SoundDef[] = [
   {
     id: 'train', icon: TrainFront, file: 'audio/train.m4a',
     credit: { title: 'Стук колёс поезда', author: 'Ural-66', license: 'CC0', url: `${COMMONS}%D0%A1%D1%82%D1%83%D0%BA_%D0%BA%D0%BE%D0%BB%D1%91%D1%81_%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%B0.ogg` },
+  },
+  {
+    id: 'beach', icon: Waves, file: 'audio/beach-waves.m4a',
+    credit: { title: 'Ocean Waves on a Tropical Beach', author: 'Jarrod stanley', license: 'CC0', url: `${COMMONS}Ocean_Waves_on_a_Tropical_Beach.ogg` },
+  },
+  {
+    id: 'blizzard', icon: Snowflake, file: 'audio/blizzard-wind.m4a',
+    credit: { title: 'Howling wind', author: 'Tvabutzku1234', license: 'CC0', url: `${COMMONS}Howling_wind.ogg` },
   },
 ]

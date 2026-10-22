@@ -1,6 +1,6 @@
 # Ambient Mixer
 
-Lo-fi / ambient sound mixer: rain, thunder, campfire, highway, night forest and train loops with per-sound volume, a focus (Pomodoro) timer, a sleep timer and an animated glass UI. RU / EN.
+Lo-fi / ambient sound mixer: rain, thunder, campfire, highway, night forest, train, beach and blizzard loops with per-sound volume, a focus (Pomodoro) timer, a sleep timer and an animated glass UI. RU / EN.
 
 Design: [project-design.md](project-design.md)
 
@@ -25,6 +25,8 @@ The loops in `public/audio/*.m4a` are recordings from Wikimedia Commons, trimmed
 | Highway | Highway from bridge center | stephan | Public domain |
 | Night forest | Nature sounds ambience in a Dordogne pond | Glaneur de sons | CC BY 3.0 |
 | Train | Стук колёс поезда | Ural-66 | CC0 |
+| Beach | Ocean Waves on a Tropical Beach | Jarrod stanley | CC0 |
+| Blizzard | Howling wind | Tvabutzku1234 | CC0 |
 
 The CC BY recordings (thunder, campfire, night forest) are edited (trimmed, looped, loudness-matched, converted); credit is shown in the app.
 
