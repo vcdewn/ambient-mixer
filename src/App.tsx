@@ -14,7 +14,6 @@ import { AppProvider, useApp, useT } from './state/AppContext'
 function Mixer() {
   const { state } = useApp()
   const t = useT()
-  const anyOn = SOUNDS.some((s) => state.tracks[s.id].enabled)
 
   return (
     <>
@@ -31,10 +30,6 @@ function Mixer() {
 
         <MasterControl />
         <TimerPanel />
-
-        {!anyOn && (
-          <p className="text-center" style={{ color: 'var(--fg-soft)' }}>{t.emptyHint}</p>
-        )}
 
         <section className="grid gap-4 sm:grid-cols-2">
           {SOUNDS.map((s) => <SoundCard key={s.id} sound={s} />)}

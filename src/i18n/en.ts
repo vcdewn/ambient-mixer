@@ -3,7 +3,6 @@ export const en = {
   tagline: 'Build your own calm soundscape',
   startSession: 'Start session',
   startHint: 'Headphones recommended',
-  emptyHint: 'Turn on any sound to begin',
   sounds: {
     rain: 'Rain',
     thunder: 'Thunder',

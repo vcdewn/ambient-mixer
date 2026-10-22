@@ -5,7 +5,6 @@ export const ru: Dict = {
   tagline: 'Соберите свою спокойную атмосферу',
   startSession: 'Начать сессию',
   startHint: 'Лучше в наушниках',
-  emptyHint: 'Включите любой звук, чтобы начать',
   sounds: {
     rain: 'Дождь',
     thunder: 'Гроза',
