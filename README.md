@@ -19,16 +19,18 @@ The loops in `public/audio/*.m4a` are recordings from Wikimedia Commons, trimmed
 
 | Sound | Source | Author | License |
 |---|---|---|---|
-| Rain | Rain against the window | cori | Public domain |
+| Rain | Synthesized (`scripts/synth-ambience.mjs`) | — | CC0 |
 | Thunder | rbh-thunder-storm | RHumphries | CC BY 3.0 |
 | Campfire | Campfire sound ambience | Glaneur de sons | CC BY 3.0 |
 | Highway | Highway from bridge center | stephan | Public domain |
 | Night forest | Nature sounds ambience in a Dordogne pond | Glaneur de sons | CC BY 3.0 |
 | Train | Стук колёс поезда | Ural-66 | CC0 |
 | Beach | Ocean Waves on a Tropical Beach | Jarrod stanley | CC0 |
-| Blizzard | IJzige wind met een sneeuwbui | Beeld en Geluid | CC BY-SA 3.0 |
+| Blizzard | Synthesized (`scripts/synth-ambience.mjs`) | — | CC0 |
 
 The CC BY recordings (thunder, campfire, night forest) are edited (trimmed, looped, loudness-matched, converted); credit is shown in the app.
+
+Rain and blizzard are generated, not recorded: `node scripts/synth-ambience.mjs <outdir>` writes seamless 60 s WAV loops (convert with `afconvert x.wav x.m4a -d aac -f m4af -b 96000`).
 
 To swap a sound, drop a new file into `public/audio/` and update `file` / `credit` in `src/data/sounds.ts` (use a new file name — audio is cached for a day).
 

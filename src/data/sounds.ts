@@ -28,16 +28,16 @@ const COMMONS = 'https://commons.wikimedia.org/wiki/File:'
 
 export const SOUNDS: SoundDef[] = [
   {
-    id: 'rain', icon: CloudRain, color: '#7cb5ff', file: 'audio/rain-window.m4a',
-    credit: { title: 'Rain against the window', author: 'cori', license: 'Public domain', url: `${COMMONS}Rain_against_the_window.ogg` },
+    id: 'rain', icon: CloudRain, color: '#7cb5ff', file: 'audio/rain-cozy.m4a',
+    credit: { title: 'Cozy window rain (synthesized)', author: 'Ambient Mixer', license: 'CC0', url: '' },
   },
   {
     id: 'thunder', icon: CloudLightning, color: '#c4a8ff', file: 'audio/thunder.m4a',
     credit: { title: 'rbh-thunder-storm', author: 'RHumphries', license: 'CC BY 3.0', url: `${COMMONS}Rhumphries_-_rbh-thunder-storm.ogg` },
   },
   {
-    id: 'blizzard', icon: Snowflake, color: '#d6e6ff', file: 'audio/blizzard-snow.m4a',
-    credit: { title: 'IJzige wind met een sneeuwbui', author: 'Beeld en Geluid', license: 'CC BY-SA 3.0', url: `${COMMONS}IJzige_wind_met_een_sneeuwbui_-_SoundCloud_-_Beeld_en_Geluid.ogg` },
+    id: 'blizzard', icon: Snowflake, color: '#d6e6ff', file: 'audio/blizzard-room.m4a',
+    credit: { title: 'Blizzard outside a warm room (synthesized)', author: 'Ambient Mixer', license: 'CC0', url: '' },
   },
   {
     id: 'forest', icon: Trees, color: '#7fdba0', file: 'audio/forest-pond.m4a',

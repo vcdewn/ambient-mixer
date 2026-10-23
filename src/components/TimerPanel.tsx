@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
-import { Pause, Play, RotateCcw, SkipForward, Coffee } from 'lucide-react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { Armchair, Bell, Brain, Coffee, Minus, Pause, Play, Plus, Repeat, RotateCcw, SkipForward, SlidersHorizontal } from 'lucide-react'
 import { useEngine } from '../audio/EngineContext'
 import { LIMITS } from '../state/reducer'
 import { useApp, useT } from '../state/AppContext'
-import type { TimerMode } from '../state/types'
+import type { FocusSettings, TimerMode } from '../state/types'
 import { formatClock } from '../timers/format'
+import { phaseMs, type FocusRun } from '../timers/focus'
 import { useFocusTimer } from '../timers/useFocusTimer'
 import { useSleepTimer } from '../timers/useSleepTimer'
 
@@ -20,6 +21,57 @@ function NumberField({ label, value, min, max, onChange }: {
       <input type="number" inputMode="numeric" min={min} max={max} value={value}
         onChange={(e) => { if (e.target.value !== '') onChange(Number(e.target.value)) }} />
     </label>
+  )
+}
+
+function IconButton({ label, onClick, pressed, children }: {
+  label: string; onClick: () => void; pressed?: boolean; children: ReactNode
+}) {
+  return (
+    <button className="glass-btn flex h-9 w-9 items-center justify-center" title={label} aria-label={label}
+      aria-pressed={pressed} onClick={onClick}>
+      {children}
+    </button>
+  )
+}
+
+function Stepper({ icon, label, value, min, max, prefix = '', onChange }: {
+  icon: ReactNode; label: string; value: number; min: number; max: number; prefix?: string; onChange: (n: number) => void
+}) {
+  const set = (n: number) => onChange(Math.min(max, Math.max(min, n)))
+  return (
+    <div className="glass-btn flex items-center gap-1 py-1 pl-3 pr-1 text-sm" title={label} role="group" aria-label={label}>
+      <span style={{ color: 'var(--fg-soft)' }}>{icon}</span>
+      <button className="flex h-6 w-6 items-center justify-center rounded-full" aria-label={`${label} −`} onClick={() => set(value - 1)}><Minus size={13} aria-hidden="true" /></button>
+      <span className="min-w-[2.2ch] text-center font-medium tabular-nums">{prefix}{value}</span>
+      <button className="flex h-6 w-6 items-center justify-center rounded-full" aria-label={`${label} +`} onClick={() => set(value + 1)}><Plus size={13} aria-hidden="true" /></button>
+    </div>
+  )
+}
+
+/** The whole cycle on one line: segment width = minutes, the fill shows progress. */
+function CycleBar({ settings: s, run, left }: { settings: FocusSettings; run: FocusRun; left: number }) {
+  const segs: { ms: number; kind: 'work' | 'break' | 'long' }[] = []
+  for (let i = 0; i < s.cyclesBeforeLong; i++) {
+    segs.push({ ms: phaseMs('work', s), kind: 'work' })
+    const last = i === s.cyclesBeforeLong - 1
+    segs.push({ ms: phaseMs(last ? 'longBreak' : 'break', s), kind: last ? 'long' : 'break' })
+  }
+  const current = run.phase === 'work' ? run.cycle * 2 : run.phase === 'longBreak' ? segs.length - 1 : Math.max(0, run.cycle - 1) * 2 + 1
+  const frac = 1 - left / Math.max(1, phaseMs(run.phase, s))
+  return (
+    <div className="flex h-2.5 gap-[3px]" aria-hidden="true">
+      {segs.map((seg, i) => {
+        const fill = i < current ? 1 : i === current ? frac : 0
+        return (
+          <div key={i} className="relative overflow-hidden rounded-full"
+            style={{ flex: seg.ms, background: `color-mix(in srgb, var(--accent) ${seg.kind === 'work' ? 22 : 10}%, transparent)`, opacity: seg.kind === 'work' ? 1 : 0.8 }}>
+            <div className="absolute inset-y-0 left-0 rounded-full"
+              style={{ width: `${fill * 100}%`, background: seg.kind === 'work' ? 'var(--accent)' : 'var(--fg-soft)', transition: 'width 0.5s linear' }} />
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
@@ -53,6 +105,7 @@ export function TimerPanel() {
     return () => { document.title = t.appName }
   }, [mode, running, focus.left, focus.run.phase, label, sleep.run.status, sleep.left, t])
 
+  const [showSettings, setShowSettings] = useState(false)
   const f = state.focus
   const setF = (patch: Partial<typeof f>) => dispatch({ type: 'SET_FOCUS', patch })
 
@@ -72,52 +125,47 @@ export function TimerPanel() {
       {mode === 'off' && <p className="text-sm" style={{ color: 'var(--fg-soft)' }}>{t.offHint}</p>}
 
       {mode === 'focus' && (
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <div>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <div className="flex items-baseline gap-3">
+              <div className="text-4xl font-semibold tabular-nums" role="timer">{formatClock(focus.left)}</div>
               <div className="text-sm" style={{ color: 'var(--fg-soft)' }} aria-live="polite">
                 {label} · {focus.run.cycle}/{f.cyclesBeforeLong}
               </div>
-              <div className="text-5xl font-semibold tabular-nums" role="timer">{formatClock(focus.left)}</div>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 ml-auto">
               {running ? (
-                <button className="btn-primary flex items-center gap-2 px-5 py-2.5" onClick={focus.pause}>
-                  <Pause size={18} aria-hidden="true" /> {t.focus.pause}
+                <button className="btn-primary flex items-center gap-2 px-4 py-2" onClick={focus.pause}>
+                  <Pause size={16} aria-hidden="true" /> {t.focus.pause}
                 </button>
               ) : (
-                <button className="btn-primary flex items-center gap-2 px-5 py-2.5" onClick={focus.start}>
-                  <Play size={18} aria-hidden="true" /> {focus.run.status === 'paused' ? t.focus.resume : t.focus.start}
+                <button className="btn-primary flex items-center gap-2 px-4 py-2" onClick={focus.start}>
+                  <Play size={16} aria-hidden="true" /> {focus.run.status === 'paused' ? t.focus.resume : t.focus.start}
                 </button>
               )}
-              <button className="glass-btn flex items-center gap-2 px-4 py-2.5 text-sm" onClick={focus.reset}>
-                <RotateCcw size={16} aria-hidden="true" /> {t.focus.reset}
-              </button>
-              <button className="glass-btn flex items-center gap-2 px-4 py-2.5 text-sm" onClick={focus.skip}>
-                {focus.run.phase === 'work'
-                  ? <><Coffee size={16} aria-hidden="true" /> {t.focus.breakNow}</>
-                  : <><SkipForward size={16} aria-hidden="true" /> {t.focus.skip}</>}
-              </button>
+              <IconButton label={t.focus.reset} onClick={focus.reset}><RotateCcw size={16} aria-hidden="true" /></IconButton>
+              <IconButton label={focus.run.phase === 'work' ? t.focus.breakNow : t.focus.skip} onClick={focus.skip}>
+                {focus.run.phase === 'work' ? <Coffee size={16} aria-hidden="true" /> : <SkipForward size={16} aria-hidden="true" />}
+              </IconButton>
+              <IconButton label={t.focus.settings} pressed={showSettings} onClick={() => setShowSettings((v) => !v)}>
+                <SlidersHorizontal size={16} aria-hidden="true" />
+              </IconButton>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 border-t pt-4" style={{ borderColor: 'var(--glass-border)' }}>
-            <h3 className="text-sm font-medium" style={{ color: 'var(--fg-soft)' }}>{t.focus.settings}</h3>
-            <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-              <NumberField label={t.focus.workMin} value={f.workMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(workMin) => setF({ workMin })} />
-              <NumberField label={t.focus.breakMin} value={f.breakMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(breakMin) => setF({ breakMin })} />
-              <NumberField label={t.focus.longBreakMin} value={f.longBreakMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(longBreakMin) => setF({ longBreakMin })} />
-              <NumberField label={t.focus.cycles} value={f.cyclesBeforeLong} min={LIMITS.cyclesMin} max={LIMITS.cyclesMax} onChange={(cyclesBeforeLong) => setF({ cyclesBeforeLong })} />
+          <CycleBar settings={f} run={focus.run} left={focus.left} />
+
+          {showSettings && (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <Stepper icon={<Brain size={15} aria-hidden="true" />} label={t.focus.workMin} value={f.workMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(workMin) => setF({ workMin })} />
+              <Stepper icon={<Coffee size={15} aria-hidden="true" />} label={t.focus.breakMin} value={f.breakMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(breakMin) => setF({ breakMin })} />
+              <Stepper icon={<Armchair size={15} aria-hidden="true" />} label={t.focus.longBreakMin} value={f.longBreakMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(longBreakMin) => setF({ longBreakMin })} />
+              <Stepper icon={<Repeat size={15} aria-hidden="true" />} label={t.focus.cycles} value={f.cyclesBeforeLong} min={LIMITS.cyclesMin} max={LIMITS.cyclesMax} prefix="×" onChange={(cyclesBeforeLong) => setF({ cyclesBeforeLong })} />
+              <span className="mx-1 h-5 w-px" style={{ background: 'var(--glass-border)' }} aria-hidden="true" />
+              <IconButton label={t.focus.autoAdvance} pressed={f.autoAdvance} onClick={() => setF({ autoAdvance: !f.autoAdvance })}><SkipForward size={16} aria-hidden="true" /></IconButton>
+              <IconButton label={t.focus.chime} pressed={f.chime} onClick={() => setF({ chime: !f.chime })}><Bell size={16} aria-hidden="true" /></IconButton>
             </div>
-            <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={f.autoAdvance} onChange={(e) => setF({ autoAdvance: e.target.checked })} /> {t.focus.autoAdvance}
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={f.chime} onChange={(e) => setF({ chime: e.target.checked })} /> {t.focus.chime}
-              </label>
-            </div>
-          </div>
+          )}
         </div>
       )}
 
