@@ -15,11 +15,24 @@ const SLEEP_PRESETS = [30, 60, 120, 240]
 function NumberField({ label, value, min, max, onChange }: {
   label: string; value: number; min: number; max: number; onChange: (n: number) => void
 }) {
+  // keep what's being typed as text, so the field can be emptied and retyped; clamp on blur
+  const [draft, setDraft] = useState<string | null>(null)
+  const commit = (raw: string) => {
+    const n = Number(raw)
+    if (raw.trim() !== '' && Number.isFinite(n)) onChange(Math.min(max, Math.max(min, Math.round(n))))
+  }
   return (
     <label className="flex items-center justify-between gap-3 text-sm">
       <span>{label}</span>
-      <input type="number" inputMode="numeric" min={min} max={max} value={value}
-        onChange={(e) => { if (e.target.value !== '') onChange(Number(e.target.value)) }} />
+      <input type="number" inputMode="numeric" min={min} max={max} value={draft ?? value}
+        onFocus={(e) => e.target.select()}
+        onChange={(e) => {
+          setDraft(e.target.value)
+          const n = Number(e.target.value)
+          if (e.target.value !== '' && n >= min && n <= max) commit(e.target.value)
+        }}
+        onBlur={(e) => { commit(e.target.value); setDraft(null) }}
+        onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }} />
     </label>
   )
 }
