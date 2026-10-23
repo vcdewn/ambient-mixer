@@ -1,5 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react'
-import { Armchair, Bell, Brain, Coffee, Minus, Pause, Play, Plus, Repeat, RotateCcw, SkipForward, SlidersHorizontal } from 'lucide-react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Bell, Coffee, Minus, Pause, Play, Plus, Repeat, RotateCcw, SkipForward } from 'lucide-react'
 import { useEngine } from '../audio/EngineContext'
 import { LIMITS } from '../state/reducer'
 import { useApp, useT } from '../state/AppContext'
@@ -49,28 +49,94 @@ function Stepper({ icon, label, value, min, max, prefix = '', onChange }: {
   )
 }
 
-/** The whole cycle on one line: segment width = minutes, the fill shows progress. */
-function CycleBar({ settings: s, run, left }: { settings: FocusSettings; run: FocusRun; left: number }) {
-  const segs: { ms: number; kind: 'work' | 'break' | 'long' }[] = []
+type SegKind = 'work' | 'break' | 'long'
+const KIND_FIELD = { work: 'workMin', break: 'breakMin', long: 'longBreakMin' } as const
+
+interface Drag { kind: SegKind; count: number; startX: number; startVal: number; pxPerMin: number; total: number }
+
+/**
+ * The whole cycle on one line: segment width = minutes, the fill shows progress.
+ * Drag a segment's right edge (or use ←/→) to change its length; click the label to type minutes.
+ */
+function Timeline({ settings: s, run, left, onChange, labels }: {
+  settings: FocusSettings; run: FocusRun; left: number
+  onChange: (patch: Partial<FocusSettings>) => void
+  labels: Record<SegKind, string>
+}) {
+  const barRef = useRef<HTMLDivElement>(null)
+  const [drag, setDrag] = useState<Drag | null>(null)
+  const [editing, setEditing] = useState<number | null>(null)
+
+  const segs: { kind: SegKind; ms: number; nth: number }[] = []
+  const seen = { work: 0, break: 0, long: 0 }
+  const push = (kind: SegKind, phase: 'work' | 'break' | 'longBreak') => segs.push({ kind, ms: phaseMs(phase, s), nth: ++seen[kind] })
   for (let i = 0; i < s.cyclesBeforeLong; i++) {
-    segs.push({ ms: phaseMs('work', s), kind: 'work' })
-    const last = i === s.cyclesBeforeLong - 1
-    segs.push({ ms: phaseMs(last ? 'longBreak' : 'break', s), kind: last ? 'long' : 'break' })
+    push('work', 'work')
+    if (i === s.cyclesBeforeLong - 1) push('long', 'longBreak')
+    else push('break', 'break')
   }
+  const totalMin = segs.reduce((n, g) => n + g.ms / 60_000, 0)
   const current = run.phase === 'work' ? run.cycle * 2 : run.phase === 'longBreak' ? segs.length - 1 : Math.max(0, run.cycle - 1) * 2 + 1
   const frac = 1 - left / Math.max(1, phaseMs(run.phase, s))
+
+  const { focusMin: lo, focusMax: hi } = LIMITS
+  const set = (kind: SegKind, v: number) => onChange({ [KIND_FIELD[kind]]: Math.min(hi, Math.max(lo, Math.round(v))) })
+
+  const startDrag = (e: React.PointerEvent, kind: SegKind, nth: number) => {
+    const width = barRef.current?.getBoundingClientRect().width ?? 1
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setDrag({ kind, count: nth, startX: e.clientX, startVal: s[KIND_FIELD[kind]], pxPerMin: width / totalMin, total: totalMin })
+  }
+  const moveDrag = (e: React.PointerEvent) => {
+    if (!drag) return
+    set(drag.kind, drag.startVal + (e.clientX - drag.startX) / (drag.pxPerMin * drag.count))
+  }
+
+  const fmtTotal = `${Math.floor(totalMin / 60)}:${String(Math.round(totalMin % 60)).padStart(2, '0')}`
+
   return (
-    <div className="flex h-2.5 gap-[3px]" aria-hidden="true">
-      {segs.map((seg, i) => {
-        const fill = i < current ? 1 : i === current ? frac : 0
-        return (
-          <div key={i} className="relative overflow-hidden rounded-full"
-            style={{ flex: seg.ms, background: `color-mix(in srgb, var(--accent) ${seg.kind === 'work' ? 22 : 10}%, transparent)`, opacity: seg.kind === 'work' ? 1 : 0.8 }}>
-            <div className="absolute inset-y-0 left-0 rounded-full"
-              style={{ width: `${fill * 100}%`, background: seg.kind === 'work' ? 'var(--accent)' : 'var(--fg-soft)', transition: 'width 0.5s linear' }} />
-          </div>
-        )
-      })}
+    <div className="flex items-center gap-3">
+      <div ref={barRef} className="flex h-9 flex-1 gap-[3px] select-none" style={{ touchAction: 'none' }}>
+        {segs.map((seg, i) => {
+          const fill = i < current ? 1 : i === current ? frac : 0
+          const min = seg.ms / 60_000
+          const tone = seg.kind === 'work' ? 'var(--accent)' : seg.kind === 'break' ? 'var(--fg-soft)' : '#9fd4b8'
+          const width = drag ? { flex: `0 0 ${(min / drag.total) * 100}%` } : { flex: `${min} 1 0` }
+          return (
+            <div key={i} className="relative min-w-0 rounded-lg" style={{ ...width, background: `color-mix(in srgb, ${tone} 18%, transparent)` }}>
+              <div className="absolute inset-0 overflow-hidden rounded-lg" aria-hidden="true">
+                <div className="absolute inset-y-0 left-0" style={{ width: `${fill * 100}%`, background: `color-mix(in srgb, ${tone} 45%, transparent)`, transition: drag ? 'none' : 'width 0.5s linear' }} />
+              </div>
+              <div className="relative flex h-full items-center justify-center text-xs font-medium tabular-nums"
+                style={i === current ? { boxShadow: `inset 0 0 0 1.5px ${tone}`, borderRadius: 8 } : undefined}>
+                {editing === i ? (
+                  <input type="number" autoFocus defaultValue={Math.round(min)} min={lo} max={hi}
+                    aria-label={labels[seg.kind]} className="h-6 w-full max-w-12 px-0 text-center text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    onFocus={(e) => e.target.select()}
+                    onBlur={(e) => { if (e.target.value !== '') set(seg.kind, Number(e.target.value)); setEditing(null) }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); if (e.key === 'Escape') setEditing(null) }} />
+                ) : (
+                  <button className="h-full w-full truncate px-1" title={labels[seg.kind]} aria-label={`${labels[seg.kind]}: ${Math.round(min)}`}
+                    onClick={() => setEditing(i)}>
+                    {Math.round(min)}
+                  </button>
+                )}
+              </div>
+              <div role="slider" tabIndex={0} aria-label={labels[seg.kind]} aria-valuemin={lo} aria-valuemax={hi} aria-valuenow={Math.round(min)}
+                className="group absolute -right-[5px] top-0 z-10 flex h-full w-[9px] cursor-ew-resize items-center justify-center outline-offset-0"
+                onPointerDown={(e) => startDrag(e, seg.kind, seg.nth)}
+                onPointerMove={moveDrag} onPointerUp={() => setDrag(null)} onPointerCancel={() => setDrag(null)}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); set(seg.kind, min + 1) }
+                  if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); set(seg.kind, min - 1) }
+                }}>
+                <span className="h-4 w-[3px] rounded-full opacity-40 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" style={{ background: 'var(--fg)' }} />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <span className="text-xs tabular-nums" style={{ color: 'var(--fg-soft)' }} title={labels.work}>{fmtTotal}</span>
     </div>
   )
 }
@@ -105,7 +171,6 @@ export function TimerPanel() {
     return () => { document.title = t.appName }
   }, [mode, running, focus.left, focus.run.phase, label, sleep.run.status, sleep.left, t])
 
-  const [showSettings, setShowSettings] = useState(false)
   const f = state.focus
   const setF = (patch: Partial<typeof f>) => dispatch({ type: 'SET_FOCUS', patch })
 
@@ -147,25 +212,17 @@ export function TimerPanel() {
               <IconButton label={focus.run.phase === 'work' ? t.focus.breakNow : t.focus.skip} onClick={focus.skip}>
                 {focus.run.phase === 'work' ? <Coffee size={16} aria-hidden="true" /> : <SkipForward size={16} aria-hidden="true" />}
               </IconButton>
-              <IconButton label={t.focus.settings} pressed={showSettings} onClick={() => setShowSettings((v) => !v)}>
-                <SlidersHorizontal size={16} aria-hidden="true" />
-              </IconButton>
             </div>
           </div>
 
-          <CycleBar settings={f} run={focus.run} left={focus.left} />
+          <Timeline settings={f} run={focus.run} left={focus.left} onChange={setF}
+            labels={{ work: t.focus.workMin, break: t.focus.breakMin, long: t.focus.longBreakMin }} />
 
-          {showSettings && (
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <Stepper icon={<Brain size={15} aria-hidden="true" />} label={t.focus.workMin} value={f.workMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(workMin) => setF({ workMin })} />
-              <Stepper icon={<Coffee size={15} aria-hidden="true" />} label={t.focus.breakMin} value={f.breakMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(breakMin) => setF({ breakMin })} />
-              <Stepper icon={<Armchair size={15} aria-hidden="true" />} label={t.focus.longBreakMin} value={f.longBreakMin} min={LIMITS.focusMin} max={LIMITS.focusMax} onChange={(longBreakMin) => setF({ longBreakMin })} />
-              <Stepper icon={<Repeat size={15} aria-hidden="true" />} label={t.focus.cycles} value={f.cyclesBeforeLong} min={LIMITS.cyclesMin} max={LIMITS.cyclesMax} prefix="×" onChange={(cyclesBeforeLong) => setF({ cyclesBeforeLong })} />
-              <span className="mx-1 h-5 w-px" style={{ background: 'var(--glass-border)' }} aria-hidden="true" />
-              <IconButton label={t.focus.autoAdvance} pressed={f.autoAdvance} onClick={() => setF({ autoAdvance: !f.autoAdvance })}><SkipForward size={16} aria-hidden="true" /></IconButton>
-              <IconButton label={t.focus.chime} pressed={f.chime} onClick={() => setF({ chime: !f.chime })}><Bell size={16} aria-hidden="true" /></IconButton>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-2">
+            <Stepper icon={<Repeat size={15} aria-hidden="true" />} label={t.focus.cycles} value={f.cyclesBeforeLong} min={LIMITS.cyclesMin} max={LIMITS.cyclesMax} prefix="×" onChange={(cyclesBeforeLong) => setF({ cyclesBeforeLong })} />
+            <IconButton label={t.focus.autoAdvance} pressed={f.autoAdvance} onClick={() => setF({ autoAdvance: !f.autoAdvance })}><SkipForward size={16} aria-hidden="true" /></IconButton>
+            <IconButton label={t.focus.chime} pressed={f.chime} onClick={() => setF({ chime: !f.chime })}><Bell size={16} aria-hidden="true" /></IconButton>
+          </div>
         </div>
       )}
 
