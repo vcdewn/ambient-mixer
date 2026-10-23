@@ -28,8 +28,8 @@ const COMMONS = 'https://commons.wikimedia.org/wiki/File:'
 
 export const SOUNDS: SoundDef[] = [
   {
-    id: 'rain', icon: CloudRain, color: '#7cb5ff', file: 'audio/rain-cozy.m4a',
-    credit: { title: 'Cozy window rain (synthesized)', author: 'Ambient Mixer', license: 'CC0', url: '' },
+    id: 'rain', icon: CloudRain, color: '#7cb5ff', file: 'audio/rain-calm.m4a',
+    credit: { title: 'Calm rain', author: 'Zuvji', license: 'CC BY-SA 4.0', url: `${COMMONS}Calm_rain.wav` },
   },
   {
     id: 'thunder', icon: CloudLightning, color: '#c4a8ff', file: 'audio/thunder.m4a',

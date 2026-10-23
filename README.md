@@ -19,7 +19,7 @@ The loops in `public/audio/*.m4a` are recordings from Wikimedia Commons, trimmed
 
 | Sound | Source | Author | License |
 |---|---|---|---|
-| Rain | Synthesized (`scripts/synth-ambience.mjs`) | — | CC0 |
+| Rain | Calm rain | Zuvji | CC BY-SA 4.0 |
 | Thunder | rbh-thunder-storm | RHumphries | CC BY 3.0 |
 | Campfire | Campfire sound ambience | Glaneur de sons | CC BY 3.0 |
 | Highway | Highway from bridge center | stephan | Public domain |
@@ -28,9 +28,9 @@ The loops in `public/audio/*.m4a` are recordings from Wikimedia Commons, trimmed
 | Beach | Ocean Waves on a Tropical Beach | Jarrod stanley | CC0 |
 | Blizzard | Synthesized (`scripts/synth-ambience.mjs`) | — | CC0 |
 
-The CC BY recordings (thunder, campfire, night forest) are edited (trimmed, looped, loudness-matched, converted); credit is shown in the app.
+The CC BY / CC BY-SA recordings (thunder, campfire, night forest, rain) are edited (trimmed, looped, loudness-matched, converted); credit is shown in the app.
 
-Rain and blizzard are generated, not recorded: `node scripts/synth-ambience.mjs <outdir>` writes seamless 60 s WAV loops (convert with `afconvert x.wav x.m4a -d aac -f m4af -b 96000`).
+Blizzard is generated, not recorded: `node scripts/synth-ambience.mjs <outdir>` writes seamless 60 s WAV loops (it also writes a synthetic rain, no longer used) (convert with `afconvert x.wav x.m4a -d aac -f m4af -b 96000`).
 
 To swap a sound, drop a new file into `public/audio/` and update `file` / `credit` in `src/data/sounds.ts` (use a new file name — audio is cached for a day).
 
