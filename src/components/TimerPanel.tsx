@@ -52,7 +52,7 @@ function Stepper({ icon, label, value, min, max, prefix = '', onChange }: {
 type SegKind = 'work' | 'break' | 'long'
 const KIND_FIELD = { work: 'workMin', break: 'breakMin', long: 'longBreakMin' } as const
 
-interface Drag { kind: SegKind; count: number; startX: number; startVal: number; pxPerMin: number; total: number }
+interface Drag { kind: SegKind; nth: number; x: number; val: number }
 
 /**
  * The whole cycle on one line: segment width = minutes, the fill shows progress.
@@ -64,7 +64,8 @@ function Timeline({ settings: s, run, left, onChange, labels }: {
   labels: Record<SegKind, string>
 }) {
   const barRef = useRef<HTMLDivElement>(null)
-  const [drag, setDrag] = useState<Drag | null>(null)
+  const dragRef = useRef<Drag | null>(null)
+  const [dragging, setDragging] = useState(false)
   const [editing, setEditing] = useState<number | null>(null)
 
   const segs: { kind: SegKind; ms: number; nth: number }[] = []
@@ -83,29 +84,34 @@ function Timeline({ settings: s, run, left, onChange, labels }: {
   const set = (kind: SegKind, v: number) => onChange({ [KIND_FIELD[kind]]: Math.min(hi, Math.max(lo, Math.round(v))) })
 
   const startDrag = (e: React.PointerEvent, kind: SegKind, nth: number) => {
-    const width = barRef.current?.getBoundingClientRect().width ?? 1
     e.currentTarget.setPointerCapture(e.pointerId)
-    setDrag({ kind, count: nth, startX: e.clientX, startVal: s[KIND_FIELD[kind]], pxPerMin: width / totalMin, total: totalMin })
+    dragRef.current = { kind, nth, x: e.clientX, val: s[KIND_FIELD[kind]] }
+    setDragging(true)
   }
+  // incremental: the bar keeps its width, so px → minutes uses the live scale (and the nth edge of a kind moves nth× faster)
   const moveDrag = (e: React.PointerEvent) => {
-    if (!drag) return
-    set(drag.kind, drag.startVal + (e.clientX - drag.startX) / (drag.pxPerMin * drag.count))
+    const d = dragRef.current
+    const width = barRef.current?.getBoundingClientRect().width
+    if (!d || !width) return
+    d.val = Math.min(hi, Math.max(lo, d.val + ((e.clientX - d.x) * totalMin) / (width * d.nth)))
+    d.x = e.clientX
+    set(d.kind, d.val)
   }
+  const endDrag = () => { dragRef.current = null; setDragging(false) }
 
   const fmtTotal = `${Math.floor(totalMin / 60)}:${String(Math.round(totalMin % 60)).padStart(2, '0')}`
 
   return (
-    <div className="flex items-center gap-3">
-      <div ref={barRef} className="flex h-9 flex-1 gap-[3px] select-none" style={{ touchAction: 'none' }}>
+    <div className="flex items-center gap-3 overflow-hidden">
+      <div ref={barRef} className="flex h-9 min-w-0 flex-1 gap-[3px] select-none" style={{ touchAction: 'none' }}>
         {segs.map((seg, i) => {
           const fill = i < current ? 1 : i === current ? frac : 0
           const min = seg.ms / 60_000
           const tone = seg.kind === 'work' ? 'var(--accent)' : seg.kind === 'break' ? 'var(--fg-soft)' : '#9fd4b8'
-          const width = drag ? { flex: `0 0 ${(min / drag.total) * 100}%` } : { flex: `${min} 1 0` }
           return (
-            <div key={i} className="relative min-w-0 rounded-lg" style={{ ...width, background: `color-mix(in srgb, ${tone} 18%, transparent)` }}>
+            <div key={i} className="relative min-w-0 rounded-lg" style={{ flex: `${min} 1 0`, background: `color-mix(in srgb, ${tone} 18%, transparent)` }}>
               <div className="absolute inset-0 overflow-hidden rounded-lg" aria-hidden="true">
-                <div className="absolute inset-y-0 left-0" style={{ width: `${fill * 100}%`, background: `color-mix(in srgb, ${tone} 45%, transparent)`, transition: drag ? 'none' : 'width 0.5s linear' }} />
+                <div className="absolute inset-y-0 left-0" style={{ width: `${fill * 100}%`, background: `color-mix(in srgb, ${tone} 45%, transparent)`, transition: dragging ? 'none' : 'width 0.5s linear' }} />
               </div>
               <div className="relative flex h-full items-center justify-center text-xs font-medium tabular-nums"
                 style={i === current ? { boxShadow: `inset 0 0 0 1.5px ${tone}`, borderRadius: 8 } : undefined}>
@@ -125,7 +131,7 @@ function Timeline({ settings: s, run, left, onChange, labels }: {
               <div role="slider" tabIndex={0} aria-label={labels[seg.kind]} aria-valuemin={lo} aria-valuemax={hi} aria-valuenow={Math.round(min)}
                 className="group absolute -right-[5px] top-0 z-10 flex h-full w-[9px] cursor-ew-resize items-center justify-center outline-offset-0"
                 onPointerDown={(e) => startDrag(e, seg.kind, seg.nth)}
-                onPointerMove={moveDrag} onPointerUp={() => setDrag(null)} onPointerCancel={() => setDrag(null)}
+                onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag}
                 onKeyDown={(e) => {
                   if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); set(seg.kind, min + 1) }
                   if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); set(seg.kind, min - 1) }
@@ -136,7 +142,7 @@ function Timeline({ settings: s, run, left, onChange, labels }: {
           )
         })}
       </div>
-      <span className="text-xs tabular-nums" style={{ color: 'var(--fg-soft)' }} title={labels.work}>{fmtTotal}</span>
+      <span className="w-9 shrink-0 text-right text-xs tabular-nums" style={{ color: 'var(--fg-soft)' }} title={labels.work}>{fmtTotal}</span>
     </div>
   )
 }
